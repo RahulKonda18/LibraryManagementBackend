@@ -1,7 +1,4 @@
-INSERT INTO book (title, copies) VALUES ('The Great Gatsby', 5);
-INSERT INTO book (title, copies) VALUES ('To Kill a Mockingbird', 3);
-INSERT INTO book (title, copies) VALUES ('1984', 7);
-INSERT INTO book (title, copies) VALUES ('The Catcher in the Rye', 2);
-
-INSERT INTO library_item (title, type) VALUES ('The Matrix', 'EBOOK');
-INSERT INTO library_item (title, type) VALUES ('National Geographic', 'MAGAZINE');
+INSERT INTO book (title, author) VALUES ('The Great Gatsby', 'F. Scott Fitzgerald');
+INSERT INTO book (title, author) VALUES ('To Kill a Mockingbird', 'Harper Lee');
+INSERT INTO book (title, author) VALUES ('1984', 'George Orwell');
+INSERT INTO book (title, author) VALUES ('The Catcher in the Rye', 'J.D. Salinger');

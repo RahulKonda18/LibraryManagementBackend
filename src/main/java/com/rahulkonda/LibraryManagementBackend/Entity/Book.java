@@ -1,30 +1,26 @@
 package com.rahulkonda.LibraryManagementBackend.Entity;
 
-import com.rahulkonda.LibraryManagementBackend.LibraryItemType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-public class LibraryItem {
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
+    private String author;
 
-    @Enumerated(EnumType.STRING)
-    private LibraryItemType type;
 
-    public LibraryItem() {
+    public Book() {
     }
 
-    public LibraryItem(Integer id, String title, LibraryItemType type) {
+    public Book(Integer id, String title, String author) {
         this.id = id;
         this.title = title;
-        this.type = type;
+        this.author = author;
     }
 
     public Integer getId() {
@@ -43,11 +39,11 @@ public class LibraryItem {
         this.title = title;
     }
 
-    public LibraryItemType getType() {
-        return type;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setType(LibraryItemType type) {
-        this.type = type;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }
