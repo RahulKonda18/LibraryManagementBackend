@@ -29,7 +29,7 @@ public class BookController {
         return bookService.getAllBooks(pageable);
     }
 
-    @GetMapping("/by-genre")
+    @GetMapping("/genre")
     public Page<Book> getBooksByGenre(@RequestParam String genre,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "9") int size) {
