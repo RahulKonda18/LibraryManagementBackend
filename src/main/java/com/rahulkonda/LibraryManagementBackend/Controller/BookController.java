@@ -37,14 +37,14 @@ public class BookController {
         return bookService.getBooksByGenre(genre, pageable);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Book> getBook(@PathVariable Integer id) {
-        Book book = bookService.getBook(id);
-        if (book != null) {
-            return ResponseEntity.ok(book);
-        }
-        return ResponseEntity.notFound().build();
-    }
+    // @GetMapping("/{id}")
+    // public ResponseEntity<Book> getBook(@PathVariable Integer id) {
+    //     Book book = bookService.getBook(id);
+    //     if (book != null) {
+    //         return ResponseEntity.ok(book);
+    //     }
+    //     return ResponseEntity.notFound().build();
+    // }
 
 
     @GetMapping("/genres")
@@ -53,10 +53,6 @@ public class BookController {
     }
     
 
-    @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        return bookService.addBook(book);
-    }
 
     @PostMapping("/{id}/borrow")
     public ResponseEntity<Book> borrowBook(@PathVariable Integer id) {

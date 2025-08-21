@@ -13,7 +13,7 @@ import java.util.List;
 @Service
 public class BookService {
 
-    @Autowired
+    @Autowired 
     private BookRepository bookRepository;
 
     public Page<Book> getAllBooks(Pageable pageable) {
@@ -28,14 +28,14 @@ public class BookService {
         return bookRepository.findById(id).orElse(null);
     }
 
-    @Transactional
-    public Book addBook(Book book) {
-        book.setId(null);
-        if (book.getCopies() == null) {
-            book.setCopies(1);
-        }
-        return bookRepository.save(book);
-    }
+    // @Transactional
+    // public Book addBook(Book book) {
+    //     book.setId(null);
+    //     if (book.getCopies() == null) {
+    //         book.setCopies(1);
+    //     }
+    //     return bookRepository.save(book);
+    // }
 
     @Transactional
     public Book borrowBook(Integer id) {
