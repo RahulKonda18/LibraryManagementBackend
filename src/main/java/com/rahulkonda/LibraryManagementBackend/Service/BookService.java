@@ -3,6 +3,8 @@ package com.rahulkonda.LibraryManagementBackend.Service;
 import com.rahulkonda.LibraryManagementBackend.Entity.Book;
 import com.rahulkonda.LibraryManagementBackend.Repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +17,8 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public Page<Book> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     public Book getBook(Integer id) {
@@ -37,6 +39,8 @@ public class BookService {
             Book existingBook = optionalBook.get();
             existingBook.setTitle(bookDetails.getTitle());
             existingBook.setAuthor(bookDetails.getAuthor());
+            existingBook.setPublishedYear(bookDetails.getPublishedYear());
+            existingBook.setGenre(bookDetails.getGenre());
             return bookRepository.save(existingBook);
         }
         return null;
@@ -48,5 +52,10 @@ public class BookService {
             return true;
         }
         return false;
+    }
+
+
+    public List<String> getGenresInDB(){
+        return bookRepository.findAllUniqueGenres();
     }
 }

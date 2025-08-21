@@ -12,15 +12,21 @@ public class Book {
     private Integer id;
     private String title;
     private String author;
+    private Integer publishedYear;
+    private String genre;
+    private Integer copies;
 
 
     public Book() {
     }
 
-    public Book(Integer id, String title, String author) {
+    public Book(Integer id, String title, String author, Integer publishedYear, String genre, Integer copies) {
         this.id = id;
         this.title = title;
         this.author = author;
+        this.publishedYear = publishedYear;
+        this.genre = genre;
+        this.copies = copies;
     }
 
     public Integer getId() {
@@ -45,5 +51,29 @@ public class Book {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public Integer getPublishedYear() {
+        return publishedYear;
+    }
+
+    public void setPublishedYear(Integer publishedYear) {
+        this.publishedYear = publishedYear;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public Integer getCopies() {
+        return copies;
+    }
+
+    public void setCopies(Integer copies) {
+        this.copies = copies;
     }
 }

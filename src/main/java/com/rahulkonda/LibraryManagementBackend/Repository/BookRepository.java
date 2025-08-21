@@ -2,6 +2,13 @@ package com.rahulkonda.LibraryManagementBackend.Repository;
 
 import com.rahulkonda.LibraryManagementBackend.Entity.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
 
 public interface BookRepository extends JpaRepository<Book, Integer> {
+
+    @Query("SELECT DISTINCT b.genre FROM Book b")
+    List<String> findAllUniqueGenres();
+    
 }
