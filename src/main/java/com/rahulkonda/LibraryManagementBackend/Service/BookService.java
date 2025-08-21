@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
@@ -21,6 +20,10 @@ public class BookService {
         return bookRepository.findAll(pageable);
     }
 
+    public Page<Book> getBooksByGenre(String genre, Pageable pageable) {
+        return bookRepository.findByGenreIgnoreCase(genre, pageable);
+    }
+
     public Book getBook(Integer id) {
         return bookRepository.findById(id).orElse(null);
     }
@@ -28,30 +31,38 @@ public class BookService {
     @Transactional
     public Book addBook(Book book) {
         book.setId(null);
+        if (book.getCopies() == null) {
+            book.setCopies(1);
+        }
         return bookRepository.save(book);
     }
 
     @Transactional
-    public Book updateBook(Integer id, Book bookDetails) {
-        Optional<Book> optionalBook = bookRepository.findById(id);
-
-        if (optionalBook.isPresent()) {
-            Book existingBook = optionalBook.get();
-            existingBook.setTitle(bookDetails.getTitle());
-            existingBook.setAuthor(bookDetails.getAuthor());
-            existingBook.setPublishedYear(bookDetails.getPublishedYear());
-            existingBook.setGenre(bookDetails.getGenre());
-            return bookRepository.save(existingBook);
+    public Book borrowBook(Integer id) {
+        Book book = bookRepository.findById(id).orElse(null);
+        if (book == null) {
+            return null;
         }
-        return null;
+
+        Integer currentCopies = book.getCopies() == null ? 1 : book.getCopies();
+        if (currentCopies <= 0) {
+            return null;
+        }
+
+        book.setCopies(currentCopies - 1);
+        return bookRepository.save(book);
     }
 
-    public boolean deleteBook(Integer id) {
-        if (bookRepository.existsById(id)) {
-            bookRepository.deleteById(id);
-            return true;
+    @Transactional
+    public Book returnBook(Integer id) {
+        Book book = bookRepository.findById(id).orElse(null);
+        if (book == null) {
+            return null;
         }
-        return false;
+
+        Integer currentCopies = book.getCopies() == null ? 1 : book.getCopies();
+        book.setCopies(currentCopies + 1);
+        return bookRepository.save(book);
     }
 
 

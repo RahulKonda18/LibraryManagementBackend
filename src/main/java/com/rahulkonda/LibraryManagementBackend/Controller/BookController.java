@@ -24,9 +24,17 @@ public class BookController {
 
     @GetMapping
     public Page<Book> getAllBooks(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size) {
+                                  @RequestParam(defaultValue = "9") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return bookService.getAllBooks(pageable);
+    }
+
+    @GetMapping("/by-genre")
+    public Page<Book> getBooksByGenre(@RequestParam String genre,
+                                      @RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "9") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookService.getBooksByGenre(genre, pageable);
     }
 
     @GetMapping("/{id}")
@@ -50,20 +58,21 @@ public class BookController {
         return bookService.addBook(book);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable Integer id, @RequestBody Book bookDetails) {
-        Book updatedBook = bookService.updateBook(id, bookDetails);
-        if (updatedBook != null) {
-            return ResponseEntity.ok(updatedBook);
+    @PostMapping("/{id}/borrow")
+    public ResponseEntity<Book> borrowBook(@PathVariable Integer id) {
+        Book borrowed = bookService.borrowBook(id);
+        if (borrowed != null) {
+            return ResponseEntity.ok(borrowed);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBook(@PathVariable Integer id) {
-        if (bookService.deleteBook(id)) {
-            return ResponseEntity.noContent().build();
+    @PostMapping("/{id}/return")
+    public ResponseEntity<Book> returnBook(@PathVariable Integer id) {
+        Book returned = bookService.returnBook(id);
+        if (returned != null) {
+            return ResponseEntity.ok(returned);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.badRequest().build();
     }
 }
