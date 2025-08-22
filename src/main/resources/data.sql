@@ -171,5 +171,15 @@ INSERT INTO book (title, author, published_year, genre) VALUES ('Fahrenheit 451'
 INSERT INTO book (title, author, published_year, genre) VALUES ('Angela''s Ashes', 'Frank McCourt', 1996, 'Non-Fiction');
 INSERT INTO book (title, author, published_year, genre) VALUES ('The Story of My Experiments with Truth (સત્યના પ્રયોગો અથવા આત્મકથા)', 'Mohandas Karamchand Gandhi', 1929, 'Non-Fiction');
 INSERT INTO book (title, author, published_year, genre) VALUES ('Bridget Jones''s Diary', 'Helen Fielding', 1996, 'Romance/Drama');
--- Seed a random number of copies (1-5) for each inserted book
+-- Seed a random number of copies (1-15) for each inserted book
 UPDATE book SET copies = CAST(FLOOR(RAND(id) * 15) + 1 AS INT);
+
+-- Insert initial users (admin and subscribers)
+INSERT INTO users (username, password, name, email, role, wallet_balance, total_fines_paid) VALUES 
+('admin', 'admin123', 'Library Administrator', 'admin@library.com', 'ADMIN', 0.00, 0.00),
+('john_doe', 'password123', 'John Doe', 'john@example.com', 'SUBSCRIBER', 200.00, 0.00),
+('jane_smith', 'password123', 'Jane Smith', 'jane@example.com', 'SUBSCRIBER', 200.00, 0.00),
+('bob_wilson', 'password123', 'Bob Wilson', 'bob@example.com', 'SUBSCRIBER', 200.00, 0.00);
+
+-- Insert initial library wallet
+INSERT INTO library_wallet (total_fine_collection) VALUES (0.00);
