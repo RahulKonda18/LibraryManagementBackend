@@ -62,6 +62,7 @@ public class BorrowService {
         return borrowRecord;
     }
 
+    @SuppressWarnings("unused")
     @Transactional
     public BorrowRecord returnBook(Long userId, Integer bookId) {
         User user = userService.getUserById(userId)
