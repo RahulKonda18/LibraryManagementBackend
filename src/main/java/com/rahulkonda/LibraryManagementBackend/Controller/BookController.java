@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
+import java.util.Map;
 
 
 
@@ -37,14 +38,55 @@ public class BookController {
         return bookService.getBooksByGenre(genre, pageable);
     }
 
-    // @GetMapping("/{id}")
-    // public ResponseEntity<Book> getBook(@PathVariable Integer id) {
-    //     Book book = bookService.getBook(id);
-    //     if (book != null) {
-    //         return ResponseEntity.ok(book);
-    //     }
-    //     return ResponseEntity.notFound().build();
-    // }
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBook(@PathVariable Integer id) {
+        Book book = bookService.getBook(id);
+        if (book != null) {
+            return ResponseEntity.ok(book);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<Book> addBook(@RequestBody Book book) {
+        try {
+            Book addedBook = bookService.addBook(book);
+            return ResponseEntity.ok(addedBook);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable Integer id, @RequestBody Book bookDetails) {
+        try {
+            Book updatedBook = bookService.updateBook(id, bookDetails);
+            return ResponseEntity.ok(updatedBook);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Integer id) {
+        try {
+            bookService.deleteBook(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/{id}/copies")
+    public ResponseEntity<Book> updateBookCopies(@PathVariable Integer id, @RequestBody Map<String, Integer> request) {
+        try {
+            Integer newCopies = request.get("copies");
+            Book updatedBook = bookService.updateBookCopies(id, newCopies);
+            return ResponseEntity.ok(updatedBook);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
     @GetMapping("/genres")

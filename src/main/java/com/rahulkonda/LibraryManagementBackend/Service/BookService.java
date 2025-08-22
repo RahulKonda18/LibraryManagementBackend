@@ -28,14 +28,42 @@ public class BookService {
         return bookRepository.findById(id).orElse(null);
     }
 
-    // @Transactional
-    // public Book addBook(Book book) {
-    //     book.setId(null);
-    //     if (book.getCopies() == null) {
-    //         book.setCopies(1);
-    //     }
-    //     return bookRepository.save(book);
-    // }
+    @Transactional
+    public Book addBook(Book book) {
+        book.setId(null);
+        if (book.getCopies() == null) {
+            book.setCopies(1);
+        }
+        return bookRepository.save(book);
+    }
+
+    @Transactional
+    public Book updateBook(Integer id, Book bookDetails) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+        
+        book.setTitle(bookDetails.getTitle());
+        book.setAuthor(bookDetails.getAuthor());
+        book.setPublishedYear(bookDetails.getPublishedYear());
+        book.setGenre(bookDetails.getGenre());
+        book.setCopies(bookDetails.getCopies());
+        
+        return bookRepository.save(book);
+    }
+
+    @Transactional
+    public void deleteBook(Integer id) {
+        bookRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Book updateBookCopies(Integer id, Integer newCopies) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
+        
+        book.setCopies(newCopies);
+        return bookRepository.save(book);
+    }
 
     @Transactional
     public Book borrowBook(Integer id) {
