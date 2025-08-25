@@ -3,6 +3,7 @@ package com.rahulkonda.LibraryManagementBackend.Service;
 import com.rahulkonda.LibraryManagementBackend.Entity.User;
 import com.rahulkonda.LibraryManagementBackend.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -40,6 +44,8 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
+        // Encode password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -50,7 +56,10 @@ public class UserService {
         
         user.setName(userDetails.getName());
         user.setEmail(userDetails.getEmail());
-        user.setPassword(userDetails.getPassword());
+        // Only encode password if it's being updated
+        if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+        }
         
         return userRepository.save(user);
     }
@@ -62,7 +71,7 @@ public class UserService {
 
     public boolean authenticateUser(String username, String password) {
         Optional<User> user = userRepository.findByUsername(username);
-        return user.isPresent() && user.get().getPassword().equals(password);
+        return user.isPresent() && passwordEncoder.matches(password, user.get().getPassword());
     }
 
     @Transactional

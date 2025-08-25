@@ -4,6 +4,7 @@ import com.rahulkonda.LibraryManagementBackend.Entity.BorrowRecord;
 import com.rahulkonda.LibraryManagementBackend.Service.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -18,6 +19,7 @@ public class BorrowController {
     private BorrowService borrowService;
 
     @PostMapping("/{userId}/books/{bookId}/borrow")
+    @PreAuthorize("hasRole('SUBSCRIBER')")
     public ResponseEntity<BorrowRecord> borrowBook(@PathVariable Long userId, @PathVariable Integer bookId) {
         try {
             BorrowRecord borrowRecord = borrowService.borrowBook(userId, bookId);
@@ -28,6 +30,7 @@ public class BorrowController {
     }
 
     @PostMapping("/{userId}/books/{bookId}/return")
+    @PreAuthorize("hasRole('SUBSCRIBER')")
     public ResponseEntity<BorrowRecord> returnBook(@PathVariable Long userId, @PathVariable Integer bookId) {
         try {
             BorrowRecord borrowRecord = borrowService.returnBook(userId, bookId);
@@ -38,6 +41,7 @@ public class BorrowController {
     }
 
     @PostMapping("/{userId}/fines/{borrowRecordId}/pay")
+    @PreAuthorize("hasRole('SUBSCRIBER')")
     public ResponseEntity<Boolean> payFine(@PathVariable Long userId, @PathVariable Long borrowRecordId) {
         try {
             boolean success = borrowService.payFine(userId, borrowRecordId);
@@ -63,16 +67,19 @@ public class BorrowController {
     }
 
     @GetMapping("/active")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<BorrowRecord>> getAllActiveBorrows() {
         return ResponseEntity.ok(borrowService.getAllActiveBorrows());
     }
 
     @GetMapping("/unpaid-fines")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<BorrowRecord>> getAllUnpaidFines() {
         return ResponseEntity.ok(borrowService.getAllUnpaidFines());
     }
 
     @GetMapping("/total-fines")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<BigDecimal> getTotalFinesCollected() {
         return ResponseEntity.ok(borrowService.calculateTotalFinesCollected());
     }
