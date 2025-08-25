@@ -161,7 +161,6 @@ INSERT INTO book (title, author, published_year, genre) VALUES ('Knowledge-value
 INSERT INTO book (title, author, published_year, genre) VALUES ('Problems in China''s Socialist Economy (中国社会主义经济问题研究)', 'Xue Muqiao', 1979, 'Non-Fiction');
 INSERT INTO book (title, author, published_year, genre) VALUES ('What Color Is Your Parachute?', 'Richard Nelson Bolles', 1970, 'Non-Fiction');
 INSERT INTO book (title, author, published_year, genre) VALUES ('The Dukan Diet', 'Pierre Dukan', 2000, 'Non-Fiction');
-INSERT INTO book (title, author, published_year, genre) VALUES ('The Joy of Sex', 'Alex Comfort', 1972, 'Non-Fiction');
 INSERT INTO book (title, author, published_year, genre) VALUES ('The Gospel According to Peanuts', 'Robert L. Short', 1965, 'Non-Fiction');
 INSERT INTO book (title, author, published_year, genre) VALUES ('The Subtle Art of Not Giving a Fuck', 'Mark Manson', 2016, 'Non-Fiction');
 INSERT INTO book (title, author, published_year, genre) VALUES ('Life of Pi', 'Yann Martel', 2001, 'Fiction');
@@ -172,14 +171,14 @@ INSERT INTO book (title, author, published_year, genre) VALUES ('Angela''s Ashes
 INSERT INTO book (title, author, published_year, genre) VALUES ('The Story of My Experiments with Truth (સત્યના પ્રયોગો અથવા આત્મકથા)', 'Mohandas Karamchand Gandhi', 1929, 'Non-Fiction');
 INSERT INTO book (title, author, published_year, genre) VALUES ('Bridget Jones''s Diary', 'Helen Fielding', 1996, 'Romance/Drama');
 -- Seed a random number of copies (1-15) for each inserted book
-UPDATE book SET copies = CAST(FLOOR(RAND(id) * 15) + 1 AS INT);
+UPDATE book SET copies = CAST(FLOOR(RANDOM() * 15) + 1 AS INT);
 
--- Insert initial users (admin and subscribers)
+-- Insert initial users (admin and subscribers) with BCrypt-encoded passwords
 INSERT INTO users (username, password, name, email, role, wallet_balance, total_fines_paid) VALUES 
-('admin', 'admin123', 'Library Administrator', 'admin@library.com', 'ADMIN', 0.00, 0.00),
-('john_doe', 'password123', 'John Doe', 'john@example.com', 'SUBSCRIBER', 200.00, 0.00),
-('jane_smith', 'password123', 'Jane Smith', 'jane@example.com', 'SUBSCRIBER', 200.00, 0.00),
-('bob_wilson', 'password123', 'Bob Wilson', 'bob@example.com', 'SUBSCRIBER', 200.00, 0.00);
+('admin', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'Library Administrator', 'admin@library.com', 'ADMIN', 0.00, 0.00),
+('john_doe', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'John Doe', 'john@example.com', 'SUBSCRIBER', 200.00, 0.00),
+('jane_smith', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'Jane Smith', 'jane@example.com', 'SUBSCRIBER', 200.00, 0.00),
+('bob_wilson', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'Bob Wilson', 'bob@example.com', 'SUBSCRIBER', 200.00, 0.00);
 
 -- Insert initial library wallet
 INSERT INTO library_wallet (total_fine_collection) VALUES (0.00);

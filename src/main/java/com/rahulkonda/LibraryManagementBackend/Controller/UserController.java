@@ -1,9 +1,12 @@
 package com.rahulkonda.LibraryManagementBackend.Controller;
-
+import com.rahulkonda.LibraryManagementBackend.Dto.LoginRequest;
+import com.rahulkonda.LibraryManagementBackend.Dto.LoginResponse;
 import com.rahulkonda.LibraryManagementBackend.Entity.User;
+import com.rahulkonda.LibraryManagementBackend.Security.JwtUtil;
 import com.rahulkonda.LibraryManagementBackend.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -18,6 +21,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
         try {
@@ -29,23 +35,29 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestBody Map<String, String> credentials) {
-        String username = credentials.get("username");
-        String password = credentials.get("password");
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
         
         if (userService.authenticateUser(username, password)) {
             User user = userService.getUserByUsername(username).orElse(null);
-            return ResponseEntity.ok(user);
+            if (user != null) {
+                String token = jwtUtil.generateToken(username, user.getRole().name(), user.getId());
+                LoginResponse response = new LoginResponse(token, user, "Login successful");
+                return ResponseEntity.ok(response);
+            }
         }
-        return ResponseEntity.status(401).build();
+        return ResponseEntity.status(401).body(new LoginResponse(null, null, "Invalid credentials"));
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/role/{role}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getUsersByRole(@PathVariable String role) {
         try {
             User.UserRole userRole = User.UserRole.valueOf(role.toUpperCase());
@@ -73,6 +85,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         try {
             userService.deleteUser(id);

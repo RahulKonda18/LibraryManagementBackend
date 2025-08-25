@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,6 +49,7 @@ public class BookController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Book> addBook(@RequestBody Book book) {
         try {
             Book addedBook = bookService.addBook(book);
@@ -58,6 +60,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Book> updateBook(@PathVariable Integer id, @RequestBody Book bookDetails) {
         try {
             Book updatedBook = bookService.updateBook(id, bookDetails);
@@ -68,6 +71,7 @@ public class BookController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteBook(@PathVariable Integer id) {
         try {
             bookService.deleteBook(id);
@@ -78,6 +82,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}/copies")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Book> updateBookCopies(@PathVariable Integer id, @RequestBody Map<String, Integer> request) {
         try {
             Integer newCopies = request.get("copies");
@@ -97,6 +102,7 @@ public class BookController {
 
 
     @PostMapping("/{id}/borrow")
+    @PreAuthorize("hasRole('SUBSCRIBER')")
     public ResponseEntity<Book> borrowBook(@PathVariable Integer id) {
         Book borrowed = bookService.borrowBook(id);
         if (borrowed != null) {
@@ -106,6 +112,7 @@ public class BookController {
     }
 
     @PostMapping("/{id}/return")
+    @PreAuthorize("hasRole('SUBSCRIBER')")
     public ResponseEntity<Book> returnBook(@PathVariable Integer id) {
         Book returned = bookService.returnBook(id);
         if (returned != null) {
