@@ -23,4 +23,6 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
     
     @Query("SELECT br FROM BorrowRecord br WHERE br.user.id = :userId AND br.isReturned = true AND br.isFinePaid = false")
     List<BorrowRecord> findUnpaidFinesByUserId(@Param("userId") Long userId);
+
+    boolean existsByBookId(Integer bookId);
 }

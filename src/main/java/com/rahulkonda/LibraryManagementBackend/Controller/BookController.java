@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,7 +76,9 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable Integer id) {
         try {
             bookService.deleteBook(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(409).build();
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

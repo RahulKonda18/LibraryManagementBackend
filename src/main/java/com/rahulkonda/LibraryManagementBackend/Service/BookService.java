@@ -2,6 +2,8 @@ package com.rahulkonda.LibraryManagementBackend.Service;
 
 import com.rahulkonda.LibraryManagementBackend.Entity.Book;
 import com.rahulkonda.LibraryManagementBackend.Repository.BookRepository;
+import com.rahulkonda.LibraryManagementBackend.Repository.BorrowRecordRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,9 @@ public class BookService {
 
     @Autowired 
     private BookRepository bookRepository;
+
+    @Autowired
+    private BorrowRecordRepository borrowRecordRepository;
 
     public Page<Book> getAllBooks(Pageable pageable) {
         return bookRepository.findAll(pageable);
@@ -53,6 +58,12 @@ public class BookService {
 
     @Transactional
     public void deleteBook(Integer id) {
+        if (!bookRepository.existsById(id)) {
+            throw new RuntimeException("Book not found");
+        }
+        if (borrowRecordRepository.existsByBookId(id)) {
+            throw new DataIntegrityViolationException("Book is referenced by borrow records");
+        }
         bookRepository.deleteById(id);
     }
 
