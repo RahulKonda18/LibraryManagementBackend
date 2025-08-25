@@ -15,6 +15,7 @@ public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long
     List<BorrowRecord> findByUserIdAndIsReturnedTrue(Long userId);
     List<BorrowRecord> findByBookId(Long bookId);
     List<BorrowRecord> findByIsReturnedFalse();
+    @Query("SELECT br FROM BorrowRecord br WHERE br.isReturned = true AND br.isFinePaid = false AND br.fineAmount > 0")
     List<BorrowRecord> findByIsReturnedTrueAndIsFinePaidFalse();
     
     @Query("SELECT br FROM BorrowRecord br WHERE br.user.id = :userId AND br.isReturned = false")

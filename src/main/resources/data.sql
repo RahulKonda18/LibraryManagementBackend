@@ -176,9 +176,63 @@ UPDATE book SET copies = CAST(FLOOR(RANDOM() * 15) + 1 AS INT);
 -- Insert initial users (admin and subscribers) with BCrypt-encoded passwords
 INSERT INTO users (username, password, name, email, role, wallet_balance, total_fines_paid) VALUES 
 ('admin', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'Library Administrator', 'admin@library.com', 'ADMIN', 0.00, 0.00),
-('john_doe', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'John Doe', 'john@example.com', 'SUBSCRIBER', 200.00, 0.00),
-('jane_smith', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'Jane Smith', 'jane@example.com', 'SUBSCRIBER', 200.00, 0.00),
-('bob_wilson', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'Bob Wilson', 'bob@example.com', 'SUBSCRIBER', 200.00, 0.00);
+('rahul', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'rahul', 'rahul@gmail.com', 'SUBSCRIBER', 200.00, 0.00),
+('devendar', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'devendar', 'devendar@gmail.com', 'SUBSCRIBER', 200.00, 0.00),
+('alekhya', '$2a$10$iEBF9Ku.Qb681JbgjHMWJO8NPI5aLxspepEO3IGkd/LA1Tf7SCW02', 'alekhya', 'alekhya@gmail.com', 'SUBSCRIBER', 200.00, 0.00);
 
 -- Insert initial library wallet
 INSERT INTO library_wallet (total_fine_collection) VALUES (0.00);
+
+-- Seed borrow records to demonstrate fines
+-- Assume user ids and book ids exist from previous inserts
+-- Overdue and returned with fine (10 days late => 50.00)
+INSERT INTO borrow_records (user_id, book_id, borrow_date, due_date, return_date, fine_amount, is_returned, is_fine_paid)
+VALUES (
+  2,
+  1,
+  DATEADD('DAY', -30, NOW()),
+  DATEADD('DAY', -16, NOW()),
+  DATEADD('DAY', -6, NOW()),
+  50.00,
+  TRUE,
+  FALSE
+);
+
+-- Overdue and returned with fine (3 days late => 15.00)
+INSERT INTO borrow_records (user_id, book_id, borrow_date, due_date, return_date, fine_amount, is_returned, is_fine_paid)
+VALUES (
+  3,
+  2,
+  DATEADD('DAY', -20, NOW()),
+  DATEADD('DAY', -6, NOW()),
+  DATEADD('DAY', -3, NOW()),
+  15.00,
+  TRUE,
+  FALSE
+);
+
+-- Active borrow not yet due (no fine)
+INSERT INTO borrow_records (user_id, book_id, borrow_date, due_date, return_date, fine_amount, is_returned, is_fine_paid)
+VALUES (
+  4,
+  3,
+  DATEADD('DAY', -5, NOW()),
+  DATEADD('DAY', 9, NOW()),
+  NULL,
+  0.00,
+  FALSE,
+  FALSE
+);
+
+-- Returned on time (no fine)
+INSERT INTO borrow_records (user_id, book_id, borrow_date, due_date, return_date, fine_amount, is_returned, is_fine_paid)
+VALUES (
+  2,
+  4,
+  DATEADD('DAY', -10, NOW()),
+  DATEADD('DAY', -4, NOW()),
+  DATEADD('DAY', -4, NOW()),
+  0.00,
+  TRUE,
+  FALSE
+);
